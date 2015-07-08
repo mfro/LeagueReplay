@@ -1,17 +1,8 @@
-﻿using MFroehlich.Parsing.JSON;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using MFroehlich.Parsing.JSON;
 
 namespace LeagueReplay.Replay.UI.Details {
   /// <summary>
@@ -45,6 +36,7 @@ namespace LeagueReplay.Replay.UI.Details {
           Grid.SetRow(player, red++);
         }
       }
+      PlayerGrid.Height = (red > blue) ? red * 72 : blue * 72;
     }
 
     private void OpenDetails(object sender, EventArgs e) {

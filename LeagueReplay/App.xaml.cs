@@ -1,12 +1,9 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
+using System.Globalization;
+using System.IO;
 using System.Reflection;
 using System.Windows;
-using System.Globalization;
 using AppResources = LeagueReplay.Properties.Resources;
 using Folder = System.Environment.SpecialFolder;
 

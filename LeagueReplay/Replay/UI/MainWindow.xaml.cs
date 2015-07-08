@@ -1,19 +1,13 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-
 using MFroehlich.Parsing.JSON;
-using System.ComponentModel;
 
 namespace LeagueReplay.Replay.UI {
   /// <summary>

@@ -1,10 +1,8 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
-
+using System.IO;
 using MFroehlich.Parsing.JSON;
 using MFroehlich.Parsing.MFro;
-using MFroehlich.Parsing;
 
 namespace LeagueReplay {
   public class MFroReplay {

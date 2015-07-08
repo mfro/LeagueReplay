@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Net;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Diagnostics;
-using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading;
 using MFroehlich.Parsing.JSON;
 
 namespace LeagueReplay.Replay {
