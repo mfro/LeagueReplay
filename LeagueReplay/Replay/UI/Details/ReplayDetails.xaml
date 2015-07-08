@@ -1,0 +1,43 @@
+﻿<Window x:Class="LeagueReplay.Replay.UI.Details.ReplayDetails"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ReplayDetails" SizeToContent="WidthAndHeight">
+  <Grid Width="820" Height="510">
+    <Grid Height="50" VerticalAlignment="Top">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="20"/>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="20"/>
+      </Grid.ColumnDefinitions>
+      <Label FontSize="36" Grid.Column="1">Victory</Label>
+      <Label FontSize="36" Grid.Column="1" HorizontalAlignment="Right">Defeat</Label>
+    </Grid>
+    <Grid Name="PlayerGrid" Height="360" VerticalAlignment="top" Margin="0,50,0,0">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="72"/>
+        <RowDefinition Height="72"/>
+        <RowDefinition Height="72"/>
+        <RowDefinition Height="72"/>
+        <RowDefinition Height="72"/>
+        <RowDefinition Height="72"/>
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="*"/>
+      </Grid.ColumnDefinitions>
+    </Grid>
+    <Grid Height="100" VerticalAlignment="Bottom">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="10"/>
+        <RowDefinition Height="*"/>
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="10"/>
+        <ColumnDefinition Width="*"/>
+      </Grid.ColumnDefinitions>
+      <Button FontFamily="Arial" FontSize="14" Grid.Row="1" Margin="290,0,0,68" Click="OpenDetails">More Details</Button>
+      <Button FontFamily="Arial" FontSize="14" Grid.Row="1" Margin="0,0,290,68" Grid.Column="2" Click="OpenReplay">Watch Replay</Button>
+    </Grid>
+  </Grid>
+</Window>
