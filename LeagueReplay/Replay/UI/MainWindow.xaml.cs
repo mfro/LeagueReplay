@@ -36,14 +36,12 @@ namespace LeagueReplay.Replay.UI {
       foreach (var item in items) SortedReplays.Add(item);
     }
 
-    private void OpenDetails(ReplayItem info) {
-      new Details.ReplayDetails(new MFroReplay(info.file), this).Show();
+    private void OpenDetails(object info, MouseEventArgs args) {
+      new Details.ReplayDetails(new MFroReplay(((ReplayItem) info).file), this).Show();
     }
 
     private void LoadMatches() {
-      Logger.WriteLine("Mark 1");
       LeagueData.Init();
-      Logger.WriteLine("Mark 2");
       FileInfo summaryFile = new FileInfo(App.SummaryPath);
       var dir = new DirectoryInfo(App.Rootpath);
       if (!dir.Exists) dir.Create();
@@ -87,10 +85,9 @@ namespace LeagueReplay.Replay.UI {
           summaries++;
         }
         SortedReplays.Add(item);
-        item.MouseUp += (src, e) => OpenDetails(item);
+        item.MouseUp += OpenDetails;
         replays.Add(item);
       }
-      Console.WriteLine(ReplayItem.totaltime);
 
       Logger.WriteLine("All replays loaded, took {0}ms", timer.ElapsedMilliseconds);
 
@@ -100,6 +97,10 @@ namespace LeagueReplay.Replay.UI {
         Logger.WriteLine("Saved summaries, {0} total summaries, {1} newly generated", newSummary.Count, summaries);
       }
       Search();
+    }
+
+    private void MatchClickUp(object sender, MouseEventArgs e) {
+      ListItems.SelectedValue = null;
     }
   }
 

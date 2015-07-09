@@ -9,10 +9,17 @@
       <RowDefinition Height="20"/>
       <RowDefinition Height="*"/>
     </Grid.RowDefinitions>
-    <TextBox Name="SearchBox" Height="20" Padding="1,1,1,1" Margin="0,0,0,0" VerticalAlignment="Top"/>
-
-    <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" Grid.Row="1">
-      <ItemsControl Name="ListItems" ItemsSource="{Binding SortedReplays}"/>
-    </ScrollViewer>
+    <ListBox Name="ListItems" ItemsSource="{Binding SortedReplays}" Grid.Row="1" BorderThickness="0"
+             ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="-1" MouseUp="MatchClickUp">
+      <ListBox.ItemContainerStyle>
+        <Style TargetType="ListBoxItem">
+          <Setter Property="Padding" Value="0"/>
+          <Setter Property="Margin" Value="-1"/>
+          <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+      </ListBox.ItemContainerStyle>
+    </ListBox>
+    
+    <TextBox Name="SearchBox" Padding="1 1 1 1" BorderThickness="0 0 0 1" VerticalAlignment="Center"/>
   </Grid>
 </Window>
