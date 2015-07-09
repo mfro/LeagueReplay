@@ -9,7 +9,7 @@
       <RowDefinition Height="20"/>
       <RowDefinition Height="*"/>
     </Grid.RowDefinitions>
-    <TextBox IsEnabled="false" Name="SearchBox" Height="20" Padding="1,1,1,1" Margin="0,0,0,0" VerticalAlignment="Top">Loading...</TextBox>
+    <TextBox Name="SearchBox" Height="20" Padding="1,1,1,1" Margin="0,0,0,0" VerticalAlignment="Top"/>
 
     <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" Grid.Row="1">
       <ItemsControl Name="ListItems" ItemsSource="{Binding SortedReplays}"/>

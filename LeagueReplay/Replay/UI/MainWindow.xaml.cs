@@ -22,10 +22,9 @@ namespace LeagueReplay.Replay.UI {
       SortedReplays = new BindingList<ReplayItem>();
       InitializeComponent();
       this.ClientArea.Width = 800 + SystemParameters.VerticalScrollBarWidth;
-      Show();
-      SearchBox.KeyUp += (src, e) => { if (e.Key == Key.Enter) Search(); };
-      
-      new Thread(LoadMatches) { IsBackground = true }.Start();
+      SearchBox.KeyUp += (src, e) => { Search(); };
+
+      LoadMatches();
     }
 
     private void Search() {
@@ -42,7 +41,9 @@ namespace LeagueReplay.Replay.UI {
     }
 
     private void LoadMatches() {
+      Logger.WriteLine("Mark 1");
       LeagueData.Init();
+      Logger.WriteLine("Mark 2");
       FileInfo summaryFile = new FileInfo(App.SummaryPath);
       var dir = new DirectoryInfo(App.Rootpath);
       if (!dir.Exists) dir.Create();
@@ -75,27 +76,22 @@ namespace LeagueReplay.Replay.UI {
       for (int i = 0; i < files.Count; i++) {
         string filename = files[i].Name.Substring(0, files[i].Name.Length - 4);
 
-        if (summary.ContainsKeys(filename)){
-          int b = i;
-          App.Current.Dispatcher.BeginInvoke(new Action(() => {
-            var item = new ReplayItem(summary.Get<JSONObject>(filename).Save<SummaryData>(), files[b]);
-            SortedReplays.Add(item);
-            item.MouseUp += (src, e) => OpenDetails(item);
-            replays.Add(item);
-          }));
+        ReplayItem item;
+        if (summary.ContainsKeys(filename)) {
+          item = new ReplayItem(summary.Get<JSONObject>(filename).Save<SummaryData>(), files[i]);
           newSummary.Add(filename, summary[filename]);
         } else {
           SummaryData data = new SummaryData(new MFroReplay(files[i]));
           newSummary.Add(filename, JSONObject.Load(data));
-          App.Current.Dispatcher.BeginInvoke(new Action(() => {
-            var item = new ReplayItem(data, files[i]);
-            SortedReplays.Add(item);
-            item.MouseUp += (src, e) => OpenDetails(item);
-            replays.Add(item);
-          }));
+          item = new ReplayItem(data, files[i]);
           summaries++;
         }
+        SortedReplays.Add(item);
+        item.MouseUp += (src, e) => OpenDetails(item);
+        replays.Add(item);
       }
+      Console.WriteLine(ReplayItem.totaltime);
+
       Logger.WriteLine("All replays loaded, took {0}ms", timer.ElapsedMilliseconds);
 
       using (FileStream saveSummary = summaryFile.Open(FileMode.Open)) {
@@ -103,11 +99,7 @@ namespace LeagueReplay.Replay.UI {
         saveSummary.Write(summBytes, 0, summBytes.Length);
         Logger.WriteLine("Saved summaries, {0} total summaries, {1} newly generated", newSummary.Count, summaries);
       }
-      App.Current.Dispatcher.BeginInvoke(new Action(() => {
-        SearchBox.Text = "";
-        SearchBox.IsEnabled = true;
-        Search();
-      }));
+      Search();
     }
   }
 

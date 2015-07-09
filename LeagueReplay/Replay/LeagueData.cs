@@ -84,24 +84,20 @@ namespace LeagueReplay.Replay {
     public static void Init() {
       Directory.CreateDirectory(DataPath);
 
-      Logger.WriteLine("Mark 1");
-
-      string latest = RiotAPI.StaticDataAPI.Realm().dd;
+      var latest = RiotAPI.StaticDataAPI.Realm();
       if (new FileInfo(DataPath + ChampDataSave).Exists) {
         using (var load = new FileInfo(DataPath + ChampDataSave).OpenRead())
         using (var mem = new MemoryStream()) {
           load.CopyTo(mem);
           ChampData = MFroehlich.Parsing.MFro.MFroFormat.Deserialize(mem.ToArray()).Save<MFroehlich.RiotAPI.RiotAPI.StaticDataAPI.ChampionListDto>();
         }
-        if (ChampData.version.Equals(latest) || latest == null)
+        if (ChampData.version.Equals(latest.dd) || latest == null)
           return;
       } else if (latest == null) {
         System.Windows.MessageBox.Show("The riot API request did not work, and no cached data is "
           + "available. Please try again later", "Riot API Request Error",
           System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
       }
-
-      Logger.WriteLine("Mark 2");
 
       Action<JSONObject, string, string> download = (data, dst, src) => {
         foreach (Object obj in data.Get<JSONObject>("data").Values) {
