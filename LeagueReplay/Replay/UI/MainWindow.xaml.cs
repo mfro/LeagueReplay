@@ -193,9 +193,9 @@ namespace LeagueReplay.Replay.UI {
   }
   [JSONStructure]
   public class ReplayData {
-    public int championId, spell1Id, spell2Id, mapId, gameQueueConfigId;
+    public int championId, spell1Id, spell2Id, mapId, gameQueueConfigId, teamId;
 
-    public long gameStartTime;
+    public long gameStartTime, summonerId;
     public Statistics statistics;
   }
   [JSONStructure]
