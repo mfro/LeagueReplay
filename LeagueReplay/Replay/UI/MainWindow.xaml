@@ -3,23 +3,29 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:LeagueReplay.Replay.UI"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        Title="MainWindow" SizeToContent="WidthAndHeight">
+        Title="League of Legends Replays" SizeToContent="WidthAndHeight">
   <Grid Name="ClientArea" Width="800" Height="500">
-    <Grid.RowDefinitions>
-      <RowDefinition Height="20"/>
-      <RowDefinition Height="*"/>
-    </Grid.RowDefinitions>
-    <ListBox Name="ListItems" ItemsSource="{Binding SortedReplays}" Grid.Row="1" BorderThickness="0"
-             ScrollViewer.HorizontalScrollBarVisibility="Disabled" Margin="-1" MouseUp="MatchClickUp">
-      <ListBox.ItemContainerStyle>
-        <Style TargetType="ListBoxItem">
-          <Setter Property="Padding" Value="0"/>
-          <Setter Property="Margin" Value="-1"/>
-          <Setter Property="BorderThickness" Value="0"/>
-        </Style>
-      </ListBox.ItemContainerStyle>
-    </ListBox>
-    
-    <TextBox Name="SearchBox" Padding="1 1 1 1" BorderThickness="0 0 0 1" VerticalAlignment="Center"/>
+    <Grid Name="ReplayArea" Visibility="Hidden">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="20"/>
+        <RowDefinition Height="*"/>
+      </Grid.RowDefinitions>
+      <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
+        <ItemsControl ItemsSource="{Binding SortedReplays}"/>
+      </ScrollViewer>
+
+      <TextBox Name="SearchBox" Padding="1 1 1 1" BorderThickness="0 0 0 1" VerticalAlignment="Center"/>
+    </Grid>
+    <Grid Name="LoadArea" Margin="30">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="*"/>
+        <RowDefinition Height="30"/>
+      </Grid.RowDefinitions>
+      <TextBlock FontFamily="Arial" FontSize="72"  TextWrapping="Wrap" Grid.Column="1">League of Legends Replay</TextBlock>
+      <ProgressBar Name="LoadingBar" Height="30" Background="Transparent" BorderThickness="0" Grid.Row="1"/>
+      <!--<UserControl Name="LoadingBar" Background="#06B025" Height="30" Width="300" HorizontalAlignment="Left"/>-->
+      <TextBlock Grid.Row="1" Name="LoadingStatus" HorizontalAlignment="Left" VerticalAlignment="Center" Height="30" Padding="4 0 4 0" FontSize="20">Downloading champions...</TextBlock>
+      <TextBlock Grid.Row="1" Name="LoadingDetail" HorizontalAlignment="Right" VerticalAlignment="Center" Height="30" Padding="4 0 4 0" FontSize="20">Annie</TextBlock>
+    </Grid>
   </Grid>
 </Window>

@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using MFroehlich.Parsing.JSON;
+using MFroehlich.Parsing.DynamicJSON;
 
 namespace LeagueReplay.Replay.UI.Details {
   /// <summary>
@@ -19,21 +19,19 @@ namespace LeagueReplay.Replay.UI.Details {
       WindowStartupLocation = WindowStartupLocation.CenterOwner;
       JSONObject data = replay.Combine;
       this.replay = replay;
-      this.gameId = data.Get<long>("gameId");
+      this.gameId = data["gameId"];
       int red = 0, blue = 0,
         redGold = 0, blueGold = 0,
         redKill = 0, blueKill = 0,
         redAssist = 0, blueAssist = 0,
         redDeaths = 0, blueDeaths = 0;
-      foreach (object value in data.Get<JSONObject>("players").Values) {
-        var json = value as JSONObject;
-        var info = json.Save<ReplayData>();
+      foreach (var info in data["players"].Values) {
         if (info.teamId == 100) {
           if(info.statistics.win > 0){
             BlueOutcome.Content = "Victory";
             RedOutcome.Content = "Defeat";
           }
-          BluePlayerDetails player = new BluePlayerDetails() { DataContext = new PlayerInfo(json) };
+          BluePlayerDetails player = new BluePlayerDetails() { DataContext = new PlayerInfo(info) };
           if (info.summonerId == replay.SummonerId) player.Background = person;
           this.PlayerGrid.Children.Add(player);
           Grid.SetColumn(player, 0);
@@ -47,7 +45,7 @@ namespace LeagueReplay.Replay.UI.Details {
             BlueOutcome.Content = "Defeat";
             RedOutcome.Content = "Victory";
           }
-          RedPlayerDetails player = new RedPlayerDetails() { DataContext = new PlayerInfo(json) };
+          RedPlayerDetails player = new RedPlayerDetails() { DataContext = new PlayerInfo(info) };
           if (info.summonerId == replay.SummonerId) player.Background = person;
           this.PlayerGrid.Children.Add(player);
           Grid.SetColumn(player, 1);

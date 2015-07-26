@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Threading;
-using MFroehlich.Parsing.JSON;
+using MFroehlich.Parsing.DynamicJSON;
 
 namespace LeagueReplay.Replay {
   public class ReplayServer {
@@ -86,7 +86,7 @@ namespace LeagueReplay.Replay {
         var response = context.Response;
         var stream = response.OutputStream;
         var target = request.Url.AbsolutePath;
-        Logger.WriteLine(target, Priority.LOW);
+        Logger.WriteLine(target, Priority.Low);
 
         response.ContentType = "text/plain";
         string[] path = target.Split('/');
@@ -102,25 +102,25 @@ namespace LeagueReplay.Replay {
           case "getLastChunkInfo":
             response.StatusCode = HTTP_OK;
             if (path[7].Equals("0")) counter++;
-            JSONObject meta = replay.MetaData;
-            JSONObject data = new JSONObject() {
-              {"duration", 30000},
-              {"availableSince", 30000},
-              {"nextAvailableChunk", 30000},
-              {"endStartupChunkId", meta.Get<int>("endStartupChunkId")},
-              {"startGameChunkId", meta.Get<int>("startGameChunkId")} };
+            dynamic meta = replay.MetaData;
+            dynamic data = new JSONObject();
+            data.duration = 30000;
+            data.availableSince = 30000;
+            data.nextAvailableChunk = 30000;
+            data.endStartupChunkId = meta.endStartupChunkId;
+            data.startGameChunkId = meta.startGameChunkId;
             if (counter > 1) {
-              data.Add("chunkId", meta.Get<int>("endGameChunkId"));
-              data.Add("keyFrameId", meta.Get<int>("lastKeyFrameId"));
-              data.Add("nextChunkId", meta.Get<int>("endGameChunkId"));
-              data.Add("endGameChunkId", meta.Get<int>("endGameChunkId"));
+              data.chunkId = meta.endGameChunkId;
+              data.keyFrameId = meta.lastKeyFrameId;
+              data.nextChunkId = meta.endGameChunkId;
+              data.endGameChunkId = meta.endGameChunkId;
             } else {
-              data.Add("chunkId", meta.Get<int>("startGameChunkId"));
-              data.Add("keyFrameId", 1);
-              data.Add("nextChunkId", meta.Get<int>("startGameChunkId"));
-              data.Add("endGameChunkId", 0);
+              data.chunkId = meta.startGameChunkId;
+              data.keyFrameId = 1;
+              data.nextChunkId = meta.startGameChunkId;
+              data.endGameChunkId = 0;
             }
-            stream.Write(JSON.Stringify(data));
+            stream.Write((string) JSON.Stringify(data));
             break;
           case "getLastKeyFrameInfo":
           case "endOfGameStats": response.StatusCode = HTTP_NOTFOUND; break;
@@ -138,8 +138,8 @@ namespace LeagueReplay.Replay {
         stream.Close();
         response.Close();
       } catch (Exception x) {
-        Logger.WriteLine(x.GetType() + ": " + x.Message, Priority.ERROR);
-        Logger.WriteLine(x.StackTrace, Priority.ERROR);
+        Logger.WriteLine(x.GetType() + ": " + x.Message, Priority.Error);
+        Logger.WriteLine(x.StackTrace, Priority.Error);
       }
     }
   }

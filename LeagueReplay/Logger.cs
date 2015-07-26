@@ -11,27 +11,35 @@ namespace LeagueReplay {
     }
 
     public static void Write(object obj) {
-      using(var log = new FileStream(App.LogPath, FileMode.Append))
+      Write(Priority.Normal, obj);
+    }
+
+    public static void Write(Priority priority, object obj) {
+      if (newLine) {
+        newLine = false;
+        Write(priority, "[" + (GetTimestamp() - start).ToString("D8") + "] ");
+      }
+      using (var log = new FileStream(App.LogPath, FileMode.Append))
         log.Write(obj.ToString());
-      Console.Write(obj.ToString());
+      if (priority != Priority.Low)
+        Console.Write(obj.ToString());
     }
 
     public static void WriteLine(object obj) {
-      if (newLine) Write("[" + (GetTimestamp() - start).ToString("D8") + "] ");
-      Write(obj.ToString() + '\n');
-      newLine = true;
+      WriteLine(Priority.Normal, obj);
     }
 
     public static void WriteLine(Priority priority, object obj) {
-      WriteLine(obj);
+      Write(priority, obj.ToString() + '\n');
+      newLine = true;
     }
 
     public static void WriteLine(string format, params object[] obj) {
-      WriteLine(format.Format(obj) as object);
+      WriteLine(Priority.Normal, format.Format(obj) as object);
     }
 
     public static void WriteLine(Priority priority, string format, object obj) {
-      WriteLine(format, obj);
+      WriteLine(priority, format.Format(obj) as object);
     }
 
     public static void Log(this System.Diagnostics.StackTrace trace) {
@@ -41,5 +49,5 @@ namespace LeagueReplay {
     }
   }
 
-  public enum Priority { LOW, NORMAL, HIGH, ERROR }
+  public enum Priority { Low, Normal, High, Error }
 }

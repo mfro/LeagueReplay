@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using MFroehlich.Parsing.JSON;
+using MFroehlich.Parsing.DynamicJSON;
 using MFroehlich.Parsing.MFro;
-using MFroehlich.RiotAPI;
+using MFroehlich.League.RiotAPI;
 
 namespace LeagueReplay.Record {
   public class Recorder {
@@ -38,7 +38,7 @@ namespace LeagueReplay.Record {
           #region Replay Download Loop
           while (true) {
             try {
-              var info = RESTData.GetChunkInfo(gameId).Save<ChunkInfo>();
+              ChunkInfo info = (dynamic) RESTData.GetChunkInfo(gameId);
               timer.Restart();
 
               if (saved == null && info.chunkId > info.startGameChunkId) {
@@ -88,16 +88,16 @@ namespace LeagueReplay.Record {
               int wait = info.nextAvailableChunk - (int)timer.ElapsedMilliseconds;
               if (wait > 0) System.Threading.Thread.Sleep(wait);
             } catch (Exception x) {
-              Logger.WriteLine(Priority.ERROR, x.Message);
-              Logger.WriteLine(Priority.ERROR, x.StackTrace);
+              Logger.WriteLine(Priority.Error, x.Message);
+              Logger.WriteLine(Priority.Error, x.StackTrace);
             }
           }
           #endregion
           Logger.WriteLine("Saving replay...");
           #region Saving Replay
-          var meta = RESTData.GetMetaData(gameId);
+          dynamic meta = RESTData.GetMetaData(gameId);
           meta["encryptionKey"] = encrypt;
-          if (meta.Get<int>("endGameChunkId") < 0) {
+          if (meta.endGameChunkId < 0) {
             Logger.WriteLine("SHIT THE BED");
             meta["endGameChunkId"] = chunkid;
           }
@@ -109,11 +109,11 @@ namespace LeagueReplay.Record {
           tmp.ReadFully(saveRaw, 0, saveRaw.Length);
           var saveData = MFroFormat.Deserialize(saveRaw);
 
-          foreach (var item in saveData.Get<JSONArray>("participants").Filter<JSONObject>())
+          foreach (var item in saveData["participants"])
             Logger.WriteLine("  " + item["summonerName"]);
-          foreach (var item in endGame.Get<JSONArray>("teamPlayerParticipantStats").Filter<JSONObject>())
+          foreach (var item in endGame["teamPlayerParticipantStats"])
             Logger.WriteLine("  " + item["summonerName"]);
-          foreach (var item in endGame.Get<JSONArray>("otherTeamPlayerParticipantStats").Filter<JSONObject>())
+          foreach (var item in endGame["otherTeamPlayerParticipantStats"])
             Logger.WriteLine("  " + item["summonerName"]);
           JSONObject combine = Combine(saveData, endGame);
 
@@ -122,29 +122,29 @@ namespace LeagueReplay.Record {
           Logger.WriteLine("Saving comblete");
         }
       } catch (Exception x) {
-        Logger.WriteLine(Priority.ERROR, x.Message);
-        Logger.WriteLine(Priority.ERROR, x.StackTrace);
+        Logger.WriteLine(Priority.Error, x.Message);
+        Logger.WriteLine(Priority.Error, x.StackTrace);
       }
     }
 	
 	  private static JSONObject Combine(JSONObject gameInfo, JSONObject endGame){
-		  JSONObject combo = new JSONObject();
+		  dynamic combo = new JSONObject();
 		
 		  String[] toCopy = {"gameId", "gameType", "gameStartTime", "mapId", "platformId", "gameLength", "gameMode", "gameQueueConfigId"};
       foreach(string key in toCopy)
         combo.Add(key, gameInfo[key]);
-		  combo.Add("encryptionKey", gameInfo["observers", "encryptionKey"]);
+		  combo.Add("encryptionKey", gameInfo["observers"]["encryptionKey"]);
 		
 		  JSONObject comboPlayers = new JSONObject();
 		
-		  JSONArray endGamePlayers = endGame.Get<JSONArray>("teamPlayerParticipantStats");
-		  endGamePlayers.AddRange(endGame.Get<JSONArray>("otherTeamPlayerParticipantStats"));
+		  dynamic endGamePlayers = endGame["teamPlayerParticipantStats"];
+		  endGamePlayers.AddRange(endGame["otherTeamPlayerParticipantStats"]);
 		
-		  List<JSONObject> infoPlayers = gameInfo.Get<JSONArray>("participants").Filter<JSONObject>();
+		  List<JSONObject> infoPlayers = gameInfo["participants"];
 		  for(int i=0;i<infoPlayers.Count;i++){
 			  JSONObject player = infoPlayers[i];
-        player.Add("statistics", FormatStats(endGamePlayers.Get<JSONObject>(i).Get<JSONArray>("statistics")));
-			  comboPlayers.Add(player.GetTrimNumber("summonerId"), player);
+        player["statistics"] = FormatStats(endGamePlayers[i].statistics);
+			  comboPlayers[JSON.Stringify(player["summonerId"])] = player;
 		  }
 
 		  combo.Add("players", comboPlayers);
@@ -153,8 +153,8 @@ namespace LeagueReplay.Record {
 	
 	  private static JSONObject FormatStats(JSONArray stats){
 		  JSONObject jsonStats = new JSONObject();
-		  foreach(var item in stats.Filter<JSONObject>()){
-			  jsonStats.Add(Format(item["statTypeName"].ToString()), item["value"]);
+		  foreach(var item in stats){
+			  jsonStats[Format(item["statTypeName"].ToString())] = item["value"];
 		  }
 		  return jsonStats;
 	  }

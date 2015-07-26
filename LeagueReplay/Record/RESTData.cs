@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-using MFroehlich.Parsing.JSON;
+using MFroehlich.Parsing.DynamicJSON;
 
 namespace LeagueReplay.Record {
   static class RESTData {

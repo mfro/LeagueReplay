@@ -20,6 +20,7 @@ namespace LeagueReplay {
       LogPath = DataPath + "log.txt";
 
     public App() {
+      new DirectoryInfo(DataPath).Create();
       Logger.WriteLine(" - Launch [" + DateTime.Now.ToString("MM/dd/yy H:mm:ss:FFF") + "] - ");
 
       var source = AppResources.ResourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
@@ -34,7 +35,6 @@ namespace LeagueReplay {
       };
 
       string[] args = Environment.GetCommandLineArgs();
-      new DirectoryInfo(DataPath).Create();
 
       if (args.Length == 1) {
         new LeagueReplay.Replay.UI.MainWindow().Show();

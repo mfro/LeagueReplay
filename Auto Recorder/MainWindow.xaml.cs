@@ -6,7 +6,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
 using MFroehlich.Parsing;
-using MFroehlich.RiotAPI;
+using MFroehlich.League.RiotAPI;
 
 namespace Auto_Recorder {
   /// <summary>
@@ -21,7 +21,7 @@ namespace Auto_Recorder {
     private System.Windows.Forms.ContextMenu menu;
 
     public MainWindow() {
-      MFroehlich.RiotAPI.RiotAPI.UrlFormat = "https://main-mfro.rhcloud.com/api/rito{0}";
+      MFroehlich.League.RiotAPI.RiotAPI.UrlFormat = "https://main-mfro.rhcloud.com/api/rito{0}";
       Summoners = new BindingList<Summoner>();
 
       try {
@@ -86,9 +86,11 @@ namespace Auto_Recorder {
       try {
         var summoners = RiotAPI.SummonerAPI.ByName(summ);
         foreach (var item in summoners.Values) {
+          Console.WriteLine(item.id);
           Summoners.Add(new Summoner(item.name, item.id));
         }
-      } catch {
+      } catch (Exception x) {
+        Console.WriteLine(x);
         System.Windows.MessageBox.Show(this, string.Format("An error occured while finding the summoner {0}.", popup.SummonerName), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
       }
       Save();

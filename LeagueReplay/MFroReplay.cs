@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using MFroehlich.Parsing.JSON;
+using MFroehlich.Parsing.DynamicJSON;
 using MFroehlich.Parsing.MFro;
 
 namespace LeagueReplay {
@@ -24,7 +24,7 @@ namespace LeagueReplay {
     }
     public long GameId {
       get {
-        return Combine.Get<long>("gameId");
+        return Combine["gameId"];
       }
     }
     public long SummonerId { get; set; }
@@ -107,40 +107,40 @@ namespace LeagueReplay {
         output.WriteInt(metaRaw.Length);
 
         output.WriteInt(offset += metaRaw.Length);
-        output.WriteInt(meta.Get<int>("lastChunkId"));
+        output.WriteInt((int) meta["lastChunkId"]);
 
-        output.WriteInt(offset += meta.Get<int>("lastChunkId") * 8);
-        output.WriteInt(meta.Get<int>("lastKeyFrameId"));
+        output.WriteInt(offset += meta["lastChunkId"] * 8);
+        output.WriteInt((int) meta["lastKeyFrameId"]);
 
         output.WriteLong(summId);
 
-        offset += meta.Get<int>("lastKeyFrameId") * 8;
+        offset += meta["lastKeyFrameId"] * 8;
 
         output.Write(combineRaw, 0, combineRaw.Length);
         output.Write(metaRaw, 0, metaRaw.Length);
 
-        for (int i = 0; i < meta.Get<int>("lastChunkId"); i++) {
+        for (int i = 0; i < meta["lastChunkId"]; i++) {
           int len = chunks[i].Length;
           output.WriteInt(offset);
           output.WriteInt(len);
           offset += len;
         }
 
-        for (int i = 0; i < meta.Get<int>("lastKeyFrameId"); i++) {
+        for (int i = 0; i < meta["lastKeyFrameId"]; i++) {
           int len = frames[i].Length;
           output.WriteInt(offset);
           output.WriteInt(len);
           offset += len;
         }
 
-        for (int i = 0; i < meta.Get<int>("lastChunkId"); i++) {
+        for (int i = 0; i < meta["lastChunkId"]; i++) {
           tmp.Seek(chunks[i].Offset, SeekOrigin.Begin);
           byte[] chunk = new byte[chunks[i].Length];
           tmp.ReadFully(chunk, 0, chunk.Length);
           output.Write(chunk, 0, chunk.Length);
         }
 
-        for (int i = 0; i < meta.Get<int>("lastKeyFrameId"); i++) {
+        for (int i = 0; i < meta["lastKeyFrameId"]; i++) {
           tmp.Seek(frames[i].Offset, SeekOrigin.Begin);
           byte[] frame = new byte[frames[i].Length];
           tmp.ReadFully(frame, 0, frame.Length);
